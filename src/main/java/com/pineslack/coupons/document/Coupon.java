@@ -8,7 +8,7 @@ import java.util.List;
 
 @Setter
 @Getter
-@Document(collection = "coupons")
+@Document("coupons")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
