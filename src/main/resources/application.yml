@@ -1,3 +1,11 @@
 spring:
   application:
     name: coupons
+
+server:
+  port: 8081
+
+coupons:
+  mongodb:
+    url: mongodb://admin:password@localhost:27018/
+    database: coupons
