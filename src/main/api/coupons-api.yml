@@ -1,0 +1,52 @@
+openapi: 3.0.1
+info:
+    title: coupons-api
+    version: 0.0.1
+    description: coupons-api
+    license:
+        name: Apache 2.0
+        url: https://www.apache.org/licenses/LICENSE-2.0.txt
+    contact:
+        name: coupons-api
+
+servers:
+  - url: http://localhost:8081
+    description: coupons-api
+
+paths:
+  /api/v1/{website}/coupons:
+    post:
+      summary: Create coupon
+      operationId: createCoupon
+      parameters:
+        - name: website
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCouponResponse'
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    CreateCouponResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: coupon code
+        customerId:
+          type: string
+          description: customer id
+        couponValue:
+          type: string
+          description: coupon value
