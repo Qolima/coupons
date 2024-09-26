@@ -18,7 +18,7 @@ paths:
       summary: Create coupon
       operationId: createCoupon
       parameters:
-        - name: website
+        - name: websiteId
           in: path
           required: true
           schema:
@@ -59,18 +59,40 @@ components:
           $ref: '#/components/schemas/CouponValue'
         couponType:
           $ref: '#/components/schemas/CouponType'
+        description:
+          $ref: '#/components/schemas/Description'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        useOnce:
+          $ref: '#/components/schemas/UseOnce'
+        productIds:
+          $ref: '#/components/schemas/ProductIds'
+        categoryIds:
+          $ref: '#/components/schemas/CategoryIds'
+        expireAt:
+          $ref: '#/components/schemas/ExpireAt'
+        validFrom:
+          $ref: '#/components/schemas/ValidFrom'
     CreateCouponResponse:
+      allOf:
+        - $ref: '#/components/schemas/Response'
+        - type: object
+
+    Response:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+
+    Status:
       type: object
       properties:
         code:
-          $ref: '#/components/schemas/Code'
-        customerId:
-          $ref: '#/components/schemas/CustomerId'
-        couponValue:
-          $ref: '#/components/schemas/CouponValue'
-        couponType:
-          $ref: '#/components/schemas/CouponType'
+          type: string
+        message:
+          type: string
 
+# Fields
     WebsiteId:
       type: string
       description: Service website.
@@ -91,3 +113,37 @@ components:
       type: string
       description: |
         Coupon code.
+    Description:
+      type: string
+      description: |
+        Coupon description.
+    Currency:
+      type: string
+      description: |
+        Coupon currency.
+    UseOnce:
+      type: boolean
+      description: |
+        Coupon can be used only once.
+    ProductIds:
+      type: array
+      items:
+        type: string
+      description: |
+        List of product ids.
+    CategoryIds:
+      type: array
+      items:
+        type: string
+      description: |
+        List of category ids.
+    ExpireAt:
+      type: string
+      format: date-time
+      description: |
+        Coupon expiration date.
+    ValidFrom:
+      type: string
+      format: date-time
+      description: |
+        Coupon start date.
