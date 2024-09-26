@@ -2,10 +2,16 @@ package com.pineslack.coupons.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pineslack.coupons.document.Coupon;
+import com.pineslack.coupons.dto.CouponDto;
 import com.pineslack.coupons.dto.CreateCouponRequestDto;
+import com.pineslack.coupons.dto.CreateCouponResponseDto;
 import com.pineslack.openapi.model.CreateCouponRequest;
+import com.pineslack.openapi.model.CreateCouponResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +30,21 @@ public class CouponsMapper {
                 .useOnce(body.getUseOnce())
                 .productIds(body.getProductIds())
                 .categoryIds(body.getCategoryIds())
-               // .expireAt(body.getExpireAt())
-              //  .validFrom(body.getValidFrom())
+                .expireAt(toLocalDateTime(body.getExpireAt()))
+                .validFrom(toLocalDateTime(body.getValidFrom()))
                 .build();
+    }
+
+    private LocalDateTime toLocalDateTime(OffsetDateTime offsetDateTime) {
+        return offsetDateTime.toLocalDateTime();
+    }
+
+    public CreateCouponResponse toCreateCouponResponse(CreateCouponResponseDto dto) {
+        return objectMapper.convertValue(dto, CreateCouponResponse.class);
     }
 
     public Coupon toCoupon(CreateCouponRequestDto requestDto) {
         return Coupon.builder()
-                .code(requestDto.getCode())
                 .websiteId(requestDto.getWebsiteId())
                 .customerId(requestDto.getCustomerId())
                 .couponValue(requestDto.getCouponValue())
@@ -44,5 +57,9 @@ public class CouponsMapper {
                 .expireAt(requestDto.getExpireAt())
                 .validFrom(requestDto.getValidFrom())
                 .build();
+    }
+
+    public CouponDto toCouponDto(Coupon coupon) {
+        return objectMapper.convertValue(coupon, CouponDto.class);
     }
 }

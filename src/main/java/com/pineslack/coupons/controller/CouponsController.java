@@ -30,7 +30,7 @@ public class CouponsController {
         CreateCouponRequestDto requestDto = mapper.toCreateCouponRequestDto(websiteId, customerId, body);
         CreateCouponResponseDto responseDto = service.createCoupon(requestDto);
 
-
-        return ResponseEntity.ok(null);
+        CreateCouponResponse response = mapper.toCreateCouponResponse(responseDto);
+        return ResponseEntity.ok(response);
     }
 }

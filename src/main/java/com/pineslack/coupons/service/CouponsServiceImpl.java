@@ -6,8 +6,8 @@ import com.pineslack.coupons.dto.CreateCouponResponseDto;
 import com.pineslack.coupons.dto.StatusDto;
 import com.pineslack.coupons.mapper.CouponsMapper;
 import com.pineslack.coupons.persistence.CouponsRepository;
+import com.pineslack.coupons.util.CouponCodeGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import static org.springframework.http.HttpStatus.OK;
@@ -24,6 +24,7 @@ public class CouponsServiceImpl implements CouponsService {
     public CreateCouponResponseDto createCoupon(CreateCouponRequestDto requestDto) {
         validator.validateCreateCoupon(requestDto);
         Coupon coupon = mapper.toCoupon(requestDto);
+        coupon.setCouponType(generateCouponCode(requestDto.getWebsiteId()));
         repository.saveCoupon(coupon);
 
         return CreateCouponResponseDto.builder()
@@ -31,6 +32,15 @@ public class CouponsServiceImpl implements CouponsService {
                         .code(OK)
                         .message("Coupon created successfully")
                         .build())
+                .coupon(mapper.toCouponDto(coupon))
                 .build();
+    }
+
+    private String generateCouponCode(String websiteId) {
+        String code;
+        do {
+            code = CouponCodeGenerator.generateCouponCode(websiteId);
+        } while (!repository.existsByWebsiteAndCode(websiteId, code));
+        return code;
     }
 }

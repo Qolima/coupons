@@ -51,10 +51,6 @@ components:
     CreateCouponRequest:
       type: object
       properties:
-        code:
-          $ref: '#/components/schemas/Code'
-        customerId:
-          $ref: '#/components/schemas/CustomerId'
         couponValue:
           $ref: '#/components/schemas/CouponValue'
         couponType:
@@ -77,6 +73,9 @@ components:
       allOf:
         - $ref: '#/components/schemas/Response'
         - type: object
+          properties:
+            coupon:
+              $ref: '#/components/schemas/Coupon'
 
     Response:
       type: object
@@ -93,6 +92,31 @@ components:
           type: string
 
 # Fields
+    Coupon:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/Code'
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+        couponValue:
+          $ref: '#/components/schemas/CouponValue'
+        couponType:
+          $ref: '#/components/schemas/CouponType'
+        description:
+          $ref: '#/components/schemas/Description'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        useOnce:
+          $ref: '#/components/schemas/UseOnce'
+        productIds:
+          $ref: '#/components/schemas/ProductIds'
+        categoryIds:
+          $ref: '#/components/schemas/CategoryIds'
+        expireAt:
+          $ref: '#/components/schemas/ExpireAt'
+        validFrom:
+          $ref: '#/components/schemas/ValidFrom'
     WebsiteId:
       type: string
       description: Service website.
@@ -103,6 +127,7 @@ components:
         Unique customer identifier.
     CouponValue:
       type: number
+      example: 10
       description: |
         Coupon value. For percentage coupons, value must be between 1 and 100.
     CouponType:
@@ -111,8 +136,10 @@ components:
         Coupon type.
     Code:
       type: string
+      example: E3B0C44298FC1C149A
       description: |
-        Coupon code.
+        Unique coupon code that belongs to service websiteId. Customers will use this code
+        to redeem a coupon.
     Description:
       type: string
       description: |

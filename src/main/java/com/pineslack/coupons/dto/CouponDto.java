@@ -9,12 +9,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
-@Getter
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateCouponRequestDto {
+public class CouponDto {
     private String websiteId;
     private String customerId;
     private BigDecimal couponValue;
@@ -22,6 +21,7 @@ public class CreateCouponRequestDto {
     private String description;
     private String currency;
     private Boolean useOnce;
+    private Boolean isActive;
     private List<String> productIds;
     private List<String> categoryIds;
     private LocalDateTime expireAt;
