@@ -1,0 +1,93 @@
+openapi: 3.0.1
+info:
+    title: Pineslack Coupons API
+    version: v1
+    description: Coupons API
+    contact:
+        name: Pineslack
+        url: https://www.pineslack.com
+        email: coupons@pineslack.com
+
+servers:
+  - url: http://localhost:8081
+    description: Coupons API server url
+
+paths:
+  /api/coupons/v1/websites/{websiteId}/customers/{customerId}:
+    post:
+      summary: Create coupon
+      operationId: createCoupon
+      parameters:
+        - name: website
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/WebsiteId'
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/CustomerId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCouponRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCouponResponse'
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    CreateCouponRequest:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/Code'
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+        couponValue:
+          $ref: '#/components/schemas/CouponValue'
+        couponType:
+          $ref: '#/components/schemas/CouponType'
+    CreateCouponResponse:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/Code'
+        customerId:
+          $ref: '#/components/schemas/CustomerId'
+        couponValue:
+          $ref: '#/components/schemas/CouponValue'
+        couponType:
+          $ref: '#/components/schemas/CouponType'
+
+    WebsiteId:
+      type: string
+      description: Service website.
+      example: pineslack
+    CustomerId:
+      type: string
+      description: |
+        Unique customer identifier.
+    CouponValue:
+      type: number
+      description: |
+        Coupon value. For percentage coupons, value must be between 1 and 100.
+    CouponType:
+      type: string
+      description: |
+        Coupon type.
+    Code:
+      type: string
+      description: |
+        Coupon code.
