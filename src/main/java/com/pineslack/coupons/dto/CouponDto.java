@@ -1,5 +1,6 @@
 package com.pineslack.coupons.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,16 +15,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CouponDto {
+    private String code;
     private String websiteId;
     private String customerId;
-    private BigDecimal couponValue;
     private String couponType;
     private String description;
-    private String currency;
     private Boolean useOnce;
-    private Boolean isActive;
     private List<String> productIds;
     private List<String> categoryIds;
     private LocalDateTime expireAt;
     private LocalDateTime validFrom;
+    private AmountDto amount; // Fixed Amount Type
+    private Integer percentage; // Percentage Type
+    private List<FreeProductDto> freeProducts; // Free Product Type
 }

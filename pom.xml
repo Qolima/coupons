@@ -115,6 +115,12 @@
                                 <delegatePattern>true</delegatePattern>
                                 <useJakartaEe>true</useJakartaEe>
                             </configOptions>
+                            <typeMappings>
+                                <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>java.time.OffsetDateTime=java.time.LocalDateTime</importMapping>
+                            </importMappings>
                         </configuration>
                     </execution>
                 </executions>

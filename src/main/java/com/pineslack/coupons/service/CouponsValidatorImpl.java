@@ -1,7 +1,7 @@
 package com.pineslack.coupons.service;
 
 import com.pineslack.coupons.dto.CreateCouponRequestDto;
-import com.pineslack.coupons.exception.CreateCouponException;
+import com.pineslack.coupons.exception.CouponException;
 import com.pineslack.coupons.util.CouponType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class CouponsValidatorImpl implements CouponsValidator {
     public void validateCreateCoupon(CreateCouponRequestDto request) {
 
         if (request.getExpireAt().isBefore(request.getValidFrom())) {
-            throw new CreateCouponException("Coupon expire date must be after valid from date");
+            throw new CouponException("Coupon expire date must be after valid from date");
         }
 
         validateCouponType(request);
@@ -32,22 +32,23 @@ public class CouponsValidatorImpl implements CouponsValidator {
             case PERCENTAGE -> {
                 BigDecimal value = request.getCouponValue();
                 if (value.compareTo(BigDecimal.ONE) < 0 || value.compareTo(BigDecimal.valueOf(100)) > 0) {
-                    throw new CreateCouponException("Percentage coupon value must be between 1 and 100");
+                    throw new CouponException("Percentage coupon value must be between 1 and 100");
                 }
                 validateCurrency(request.getCurrency());
             }
-            default -> throw new CreateCouponException("Coupon type = " + request.getCouponType() + " is not valid");
+            case INVALID_TYPE ->
+                    throw new CouponException("Coupon type = " + request.getCouponType() + " is not valid");
         }
     }
 
     private void validateCurrency(String currency) {
         if (isBlank(currency)) {
-            throw new CreateCouponException("Currency code is required for this coupon type");
+            throw new CouponException("Currency code is required for this coupon type");
         }
         try {
             Currency.getInstance(currency);
         } catch (IllegalArgumentException e) {
-            throw new CreateCouponException("Currency code = " + currency + " is not valid");
+            throw new CouponException("Currency code = " + currency + " is not valid");
         }
     }
 }

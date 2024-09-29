@@ -22,9 +22,14 @@ public class PersistenceConfig extends AbstractMongoClientConfiguration {
     public MongoClient mongoClient() {
         return MongoClients.create(
                 MongoClientSettings.builder()
-                        .applyConnectionString(new ConnectionString(url + getDatabaseName()))
+                        .applyConnectionString(connectionString())
                         .build()
         );
+    }
+
+    private ConnectionString connectionString() {
+        String string = url;
+        return new ConnectionString(string);
     }
 
     @Override

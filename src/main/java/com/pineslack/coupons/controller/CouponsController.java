@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/coupons/v1")
@@ -25,7 +27,7 @@ public class CouponsController {
     public ResponseEntity<CreateCouponResponse> createCoupon(
             final @PathVariable String websiteId,
             final @PathVariable String customerId,
-            final @RequestBody CreateCouponRequest body) {
+            final @RequestBody Map<String, Object> body) {
 
         CreateCouponRequestDto requestDto = mapper.toCreateCouponRequestDto(websiteId, customerId, body);
         CreateCouponResponseDto responseDto = service.createCoupon(requestDto);

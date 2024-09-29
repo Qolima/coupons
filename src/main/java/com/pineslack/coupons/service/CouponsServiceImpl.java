@@ -22,9 +22,9 @@ public class CouponsServiceImpl implements CouponsService {
 
     @Override
     public CreateCouponResponseDto createCoupon(CreateCouponRequestDto requestDto) {
-        validator.validateCreateCoupon(requestDto);
+ //       validator.validateCreateCoupon(requestDto);
         Coupon coupon = mapper.toCoupon(requestDto);
-        coupon.setCouponType(generateCouponCode(requestDto.getWebsiteId()));
+    //    coupon.setCode(generateCouponCode(requestDto.getWebsiteId()));
         repository.saveCoupon(coupon);
 
         return CreateCouponResponseDto.builder()

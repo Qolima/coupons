@@ -97,6 +97,8 @@ components:
       properties:
         code:
           $ref: '#/components/schemas/Code'
+        websiteId:
+          $ref: '#/components/schemas/WebsiteId'
         customerId:
           $ref: '#/components/schemas/CustomerId'
         couponValue:
