@@ -10,6 +10,7 @@ import com.pineslack.coupons.util.CouponCodeGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.pineslack.coupons.util.StatusMessages.COUPON_CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @Service
@@ -24,13 +25,13 @@ public class CouponsServiceImpl implements CouponsService {
     public CreateCouponResponseDto createCoupon(CreateCouponRequestDto requestDto) {
  //       validator.validateCreateCoupon(requestDto);
         Coupon coupon = mapper.toCoupon(requestDto);
-    //    coupon.setCode(generateCouponCode(requestDto.getWebsiteId()));
+        coupon.setCode(generateCouponCode(requestDto.getWebsiteId()));
         repository.saveCoupon(coupon);
 
         return CreateCouponResponseDto.builder()
                 .status(StatusDto.builder()
                         .code(OK)
-                        .message("Coupon created successfully")
+                        .message(COUPON_CREATED)
                         .build())
                 .coupon(mapper.toCouponDto(coupon))
                 .build();
@@ -40,7 +41,7 @@ public class CouponsServiceImpl implements CouponsService {
         String code;
         do {
             code = CouponCodeGenerator.generateCouponCode(websiteId);
-        } while (!repository.existsByWebsiteAndCode(websiteId, code));
+        } while (repository.existsByWebsiteAndCode(websiteId, code));
         return code;
     }
 }

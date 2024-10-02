@@ -5,7 +5,9 @@ import com.pineslack.coupons.document.Coupon;
 import com.pineslack.coupons.dto.CouponDto;
 import com.pineslack.coupons.dto.CreateCouponRequestDto;
 import com.pineslack.coupons.dto.CreateCouponResponseDto;
+import com.pineslack.coupons.dto.StatusDto;
 import com.pineslack.openapi.model.CreateCouponResponse;
+import com.pineslack.openapi.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,11 +27,35 @@ public class CouponsMapper {
     }
 
     public CreateCouponResponse toCreateCouponResponse(CreateCouponResponseDto dto) {
-        return objectMapper.convertValue(dto, CreateCouponResponse.class);
+        return new CreateCouponResponse().coupon(toCoupon(dto.getCoupon())).status(toStatus(dto.getStatus()));
+    }
+
+    public com.pineslack.openapi.model.Coupon toCoupon(CouponDto couponDto) {
+        return new com.pineslack.openapi.model.Coupon().couponType(couponDto.getCouponType())
+                .customerId(couponDto.getCustomerId())
+                .code(couponDto.getCode())
+                .description(couponDto.getDescription())
+             //   .expireAt(couponDto.getExpireAt())
+                .productIds(couponDto.getProductIds())
+                .categoryIds(couponDto.getCategoryIds())
+                .useOnce(couponDto.getUseOnce());
+              //  .validFrom(couponDto.getValidFrom());
+    }
+
+    public Status toStatus(StatusDto statusDto){
+        return objectMapper.convertValue(statusDto, Status.class);
     }
 
     public Coupon toCoupon(CreateCouponRequestDto requestDto) {
-        return objectMapper.convertValue(requestDto, Coupon.class);
+        return Coupon.builder()
+                .couponType(requestDto.getCouponType())
+                .customerId(requestDto.getCustomerId())
+                .description(requestDto.getDescription())
+               // .expireAt(requestDto.getExpireAt())
+                .productIds(requestDto.getProductIds())
+                .categoryIds(requestDto.getCategoryIds())
+                .useOnce(requestDto.getUseOnce())
+                .build();
     }
 
     public CouponDto toCouponDto(Coupon coupon) {

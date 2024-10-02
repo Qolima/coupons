@@ -1,12 +1,12 @@
 openapi: 3.0.1
 info:
-    title: Pineslack Coupons API
-    version: v1
-    description: Coupons API
-    contact:
-        name: Pineslack
-        url: https://www.pineslack.com
-        email: coupons@pineslack.com
+  title: Pineslack Coupons API
+  version: v1
+  description: Coupons API
+  contact:
+    name: Pineslack
+    url: https://www.pineslack.com
+    email: coupons@pineslack.com
 
 servers:
   - url: http://localhost:8081
@@ -33,7 +33,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateCouponRequest'
+              oneOf:
+                - $ref: '#/components/schemas/CreateFixedAmountCouponRequest'
+                - $ref: '#/components/schemas/CreatePercentageCouponRequest'
+                - $ref: '#/components/schemas/CreateFreeProductCouponRequest'
+                - $ref: '#/components/schemas/CreateFreeShippingCouponRequest'
       responses:
         '200':
           description: Created
@@ -48,17 +52,20 @@ components:
       type: http
       scheme: basic
   schemas:
-    CreateCouponRequest:
+    CreateCouponBase:
       type: object
+      discriminator:
+        propertyName: couponType
+        mapping:
+          fixed_amount: '#/components/schemas/CreateFixedAmountCouponRequest'
+          free_product: '#/components/schemas/CreateFreeProductCouponRequest'
+          percentage: '#/components/schemas/CreatePercentageCouponRequest'
+          free_shipping: '#/components/schemas/CreateFreeShippingCouponRequest'
       properties:
-        couponValue:
-          $ref: '#/components/schemas/CouponValue'
         couponType:
           $ref: '#/components/schemas/CouponType'
         description:
           $ref: '#/components/schemas/Description'
-        currency:
-          $ref: '#/components/schemas/Currency'
         useOnce:
           $ref: '#/components/schemas/UseOnce'
         productIds:
@@ -69,6 +76,48 @@ components:
           $ref: '#/components/schemas/ExpireAt'
         validFrom:
           $ref: '#/components/schemas/ValidFrom'
+
+    CreateFreeProductCouponRequest:
+      allOf:
+        - $ref: '#/components/schemas/CreateCouponBase'
+        - type: object
+          properties:
+            freeProducts:
+              type: array
+              items:
+                $ref: '#/components/schemas/FreeProduct'
+
+    CreatePercentageCouponRequest:
+      allOf:
+        - $ref: '#/components/schemas/CreateCouponBase'
+        - type: object
+          properties:
+            percentage:
+              $ref: '#/components/schemas/Percentage'
+
+    CreateFixedAmountCouponRequest:
+      allOf:
+        - $ref: '#/components/schemas/CreateCouponBase'
+        - type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/Amount'
+
+    CreateFreeShippingCouponRequest:
+      allOf:
+        - $ref: '#/components/schemas/CreateCouponBase'
+        - type: object
+
+    CreateFreeProductCouponResponse:
+      allOf:
+        - $ref: '#/components/schemas/CreateCouponResponse'
+        - type: object
+          properties:
+            freeProducts:
+              type: array
+              items:
+                $ref: '#/components/schemas/FreeProduct'
+
     CreateCouponResponse:
       allOf:
         - $ref: '#/components/schemas/Response'
@@ -91,7 +140,7 @@ components:
         message:
           type: string
 
-# Fields
+    # Fields
     Coupon:
       type: object
       properties:
@@ -101,8 +150,6 @@ components:
           $ref: '#/components/schemas/WebsiteId'
         customerId:
           $ref: '#/components/schemas/CustomerId'
-        couponValue:
-          $ref: '#/components/schemas/CouponValue'
         couponType:
           $ref: '#/components/schemas/CouponType'
         description:
@@ -119,6 +166,28 @@ components:
           $ref: '#/components/schemas/ExpireAt'
         validFrom:
           $ref: '#/components/schemas/ValidFrom'
+    Amount:
+      type: object
+      description: |
+        Coupon amount.
+      properties:
+        value:
+          type: number
+        currency:
+          $ref: '#/components/schemas/Currency'
+    FreeProduct:
+      type: object
+      description: |
+        Coupon free product.
+      properties:
+        productId:
+          type: string
+        quantity:
+          type: number
+    Percentage:
+      type: number
+      description: |
+        Coupon percentage. Value must be between 1 and 100.
     WebsiteId:
       type: string
       description: Service website.
@@ -127,11 +196,6 @@ components:
       type: string
       description: |
         Unique customer identifier.
-    CouponValue:
-      type: number
-      example: 10
-      description: |
-        Coupon value. For percentage coupons, value must be between 1 and 100.
     CouponType:
       type: string
       description: |

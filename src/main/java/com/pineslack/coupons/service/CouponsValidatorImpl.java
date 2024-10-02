@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Currency;
 
 import static io.micrometer.common.util.StringUtils.isBlank;
@@ -34,10 +35,15 @@ public class CouponsValidatorImpl implements CouponsValidator {
                 if (value.compareTo(BigDecimal.ONE) < 0 || value.compareTo(BigDecimal.valueOf(100)) > 0) {
                     throw new CouponException("Percentage coupon value must be between 1 and 100");
                 }
-                validateCurrency(request.getCurrency());
             }
             case INVALID_TYPE ->
                     throw new CouponException("Coupon type = " + request.getCouponType() + " is not valid");
+        }
+    }
+
+    private void validateDates(LocalDateTime from, LocalDateTime to) {
+        if (from.isAfter(to)) {
+            throw new CouponException("Coupon valid from date must be before valid to date");
         }
     }
 

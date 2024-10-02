@@ -5,8 +5,9 @@ import lombok.Getter;
 @Getter
 public enum CouponType {
 
-    FIXED("fixed"),
+    FIXED_AMOUNT("fixed_amount"),
     PERCENTAGE("percentage"),
+    FREE_SERVICE("free_service"),
     FREE_PRODUCT("free_product"),
     FREE_SHIPPING("free_shipping"),
     INVALID_TYPE("invalid_type");
