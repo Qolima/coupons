@@ -22,7 +22,7 @@ public class Coupon {
     private String customerId;
     private String couponType;
     private String description;
-    private Boolean useOnce;
+    private Integer usageLimit;
     private Boolean isActive;
     private List<String> productIds;
     private List<String> categoryIds;

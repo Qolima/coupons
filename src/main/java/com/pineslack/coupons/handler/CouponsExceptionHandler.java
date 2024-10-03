@@ -25,10 +25,12 @@ public class CouponsExceptionHandler {
         return createResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
+/*
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ResponseDto> handleServerError(RuntimeException e, WebRequest request) {
         return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR_MESSAGE);
     }
+*/
 
     private ResponseEntity<ResponseDto> createResponse(HttpStatus status, String message) {
         ResponseDto response = ResponseDto.builder()

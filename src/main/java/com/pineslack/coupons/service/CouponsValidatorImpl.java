@@ -31,9 +31,9 @@ public class CouponsValidatorImpl implements CouponsValidator {
         CouponType type = CouponType.getTypeFromValue(request.getCouponType());
         switch (type) {
             case PERCENTAGE -> {
-                BigDecimal value = request.getCouponValue();
-                if (value.compareTo(BigDecimal.ONE) < 0 || value.compareTo(BigDecimal.valueOf(100)) > 0) {
-                    throw new CouponException("Percentage coupon value must be between 1 and 100");
+                Integer value = request.getPercentage();
+                if (value.compareTo(1) < 0 || value.compareTo(100) > 0) {
+                    throw new CouponException("Coupon percentage value must be between 1 and 100");
                 }
             }
             case INVALID_TYPE ->

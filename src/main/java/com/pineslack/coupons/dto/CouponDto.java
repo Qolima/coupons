@@ -20,7 +20,7 @@ public class CouponDto {
     private String customerId;
     private String couponType;
     private String description;
-    private Boolean useOnce;
+    private Integer usageLimit;
     private List<String> productIds;
     private List<String> categoryIds;
     private LocalDateTime expireAt;

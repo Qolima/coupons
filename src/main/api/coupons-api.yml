@@ -140,7 +140,7 @@ components:
         message:
           type: string
 
-    # Fields
+    # Coupons
     Coupon:
       type: object
       properties:
@@ -152,12 +152,10 @@ components:
           $ref: '#/components/schemas/CustomerId'
         couponType:
           $ref: '#/components/schemas/CouponType'
+        usageLimit:
+          $ref: '#/components/schemas/UsageLimit'
         description:
           $ref: '#/components/schemas/Description'
-        currency:
-          $ref: '#/components/schemas/Currency'
-        useOnce:
-          $ref: '#/components/schemas/UseOnce'
         productIds:
           $ref: '#/components/schemas/ProductIds'
         categoryIds:
@@ -166,6 +164,42 @@ components:
           $ref: '#/components/schemas/ExpireAt'
         validFrom:
           $ref: '#/components/schemas/ValidFrom'
+
+    FixedAmountCoupon:
+      allOf:
+        - $ref: '#/components/schemas/Coupon'
+        - type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/Amount'
+
+    PercentageCoupon:
+      allOf:
+        - $ref: '#/components/schemas/Coupon'
+        - type: object
+          properties:
+            percentage:
+              $ref: '#/components/schemas/Percentage'
+
+    FreeProductCoupon:
+      allOf:
+        - $ref: '#/components/schemas/Coupon'
+        - type: object
+          properties:
+            freeProducts:
+              type: array
+              items:
+                $ref: '#/components/schemas/FreeProduct'
+
+    FreeShippingCoupon:
+      allOf:
+        - $ref: '#/components/schemas/Coupon'
+        - type: object
+          properties:
+            freeShipping:
+              type: boolean
+
+    # Fields
     Amount:
       type: object
       description: |
@@ -218,6 +252,11 @@ components:
       type: boolean
       description: |
         Coupon can be used only once.
+    UsageLimit:
+      type: integer
+      default: 1
+      description: |
+        Coupon usage limit.
     ProductIds:
       type: array
       items:
@@ -232,11 +271,9 @@ components:
         List of category ids.
     ExpireAt:
       type: string
-      format: date-time
       description: |
         Coupon expiration date.
     ValidFrom:
       type: string
-      format: date-time
       description: |
         Coupon start date.

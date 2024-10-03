@@ -107,7 +107,9 @@
                             <supportingFilesToGenerate>
                                 ApiUtil.java
                             </supportingFilesToGenerate>
+                            <generateApiDocumentation>true</generateApiDocumentation>
                             <generateModelDocumentation>false</generateModelDocumentation>
+                            <openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
                             <generateModels>true</generateModels>
                             <configOptions>
                                 <sourceFolder>src/gen/java</sourceFolder>
