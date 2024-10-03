@@ -1,37 +1,29 @@
-package com.pineslack.coupons.document;
+package com.pineslack.coupons.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.pineslack.coupons.dto.AmountDto;
-import com.pineslack.coupons.dto.FreeProductDto;
 import lombok.*;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Setter
+import static com.pineslack.coupons.util.Defaults.DEFAULT_USAGE_LIMIT;
+
+
 @Getter
-@Document("coupons")
+@Builder
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-@Builder
-public class Coupon {
-    private String code;
+public class CreateCouponRequestDto {
     private String websiteId;
     private String customerId;
     private String couponType;
     private String description;
-    private Integer usageLimit;
-    private Boolean isActive;
+    private Integer usageLimit = DEFAULT_USAGE_LIMIT;
     private List<String> productIds;
     private List<String> categoryIds;
     private LocalDateTime expireAt;
     private LocalDateTime validFrom;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private AmountDto amount; // Fixed Amount Type
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer percentage; // Percentage Type
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<FreeProductDto> freeProducts; // Free Product Type
 }

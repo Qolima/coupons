@@ -5,4 +5,6 @@ import com.pineslack.coupons.document.Coupon;
 public interface CouponsRepository {
 
     public Coupon saveCoupon(Coupon coupon);
+
+    public boolean existsByWebsiteAndCode(String websiteId, String code);
 }
