@@ -20,9 +20,9 @@ public class CouponsConfig {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.registerModule(new JavaTimeModule());
-        SimpleModule module = new SimpleModule();
-        module.addDeserializer(Coupon.class, new CouponsMapper.CustomResponseCuoponDeserializer());
-        objectMapper.registerModule(module);
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addDeserializer(Coupon.class, new CouponsMapper.CustomResponseCuoponDeserializer());
+        objectMapper.registerModule(simpleModule);
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         return objectMapper;
     }
