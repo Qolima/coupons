@@ -46,6 +46,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateCouponResponse'
 
+  /api/coupons/v1/websites/{websiteId}/customers/{customerId}/coupons/{couponCode}:
+    post:
+      summary: Redeem coupon
+      operationId: redeemCoupon
+      parameters:
+        - name: websiteId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/WebsiteId'
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/CustomerId'
+        - name: couponCode
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/Code'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RedemptionRequestBody'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedemptionResponse'
+
 components:
   securitySchemes:
     basicAuth:
@@ -66,12 +100,16 @@ components:
           $ref: '#/components/schemas/CouponType'
         description:
           $ref: '#/components/schemas/Description'
-        useOnce:
-          $ref: '#/components/schemas/UseOnce'
-        productIds:
-          $ref: '#/components/schemas/ProductIds'
-        categoryIds:
-          $ref: '#/components/schemas/CategoryIds'
+        usageLimit:
+          $ref: '#/components/schemas/UsageLimit'
+        multiUser:
+          $ref: '#/components/schemas/MultiUser'
+        eligibleProductIds:
+          $ref: '#/components/schemas/EligibleCategoryIds'
+        eligibleCategoryIds:
+          $ref: '#/components/schemas/EligibleCategoryIds'
+        eligibleMinAmount:
+          $ref: '#/components/schemas/EligibleMinAmount'
         expireAt:
           $ref: '#/components/schemas/ExpireAt'
         validFrom:
@@ -108,16 +146,6 @@ components:
         - $ref: '#/components/schemas/CreateCouponBase'
         - type: object
 
-    CreateFreeProductCouponResponse:
-      allOf:
-        - $ref: '#/components/schemas/CreateCouponResponse'
-        - type: object
-          properties:
-            freeProducts:
-              type: array
-              items:
-                $ref: '#/components/schemas/FreeProduct'
-
     CreateCouponResponse:
       allOf:
         - $ref: '#/components/schemas/Response'
@@ -140,6 +168,23 @@ components:
         message:
           type: string
 
+    # Redemptions
+
+    RedemptionRequestBody:
+      type: object
+      properties:
+        cartProductIds:
+          $ref: '#/components/schemas/CartProductIds'
+        cartCategoryIds:
+          $ref: '#/components/schemas/CartCategoryIds'
+        cartAmount:
+          $ref: '#/components/schemas/CartAmount'
+
+    RedemptionResponse:
+      allOf:
+        - $ref: '#/components/schemas/Response'
+        - type: object
+
     # Coupons
     Coupon:
       type: object
@@ -156,10 +201,14 @@ components:
           $ref: '#/components/schemas/UsageLimit'
         description:
           $ref: '#/components/schemas/Description'
-        productIds:
-          $ref: '#/components/schemas/ProductIds'
-        categoryIds:
-          $ref: '#/components/schemas/CategoryIds'
+        multiUser:
+          $ref: '#/components/schemas/MultiUser'
+        eligibleProductIds:
+          $ref: '#/components/schemas/EligibleProductIds'
+        eligibleCategoryIds:
+          $ref: '#/components/schemas/EligibleCategoryIds'
+        eligibleMinAmount:
+          $ref: '#/components/schemas/EligibleMinAmount'
         expireAt:
           $ref: '#/components/schemas/ExpireAt'
         validFrom:
@@ -207,6 +256,7 @@ components:
       properties:
         value:
           type: number
+          example: 10
         currency:
           $ref: '#/components/schemas/Currency'
     FreeProduct:
@@ -216,10 +266,16 @@ components:
       properties:
         productId:
           type: string
+          example: 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d
         quantity:
           type: number
+          default: 1
+          example: 2
     Percentage:
       type: number
+      minimum: 1
+      maximum: 100
+      example: 50
       description: |
         Coupon percentage. Value must be between 1 and 100.
     WebsiteId:
@@ -230,10 +286,12 @@ components:
       type: string
       description: |
         Unique customer identifier.
+      example: 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d
     CouponType:
       type: string
-      description: |
-        Coupon type.
+      description: | 
+        Coupon type: free_shipping, free_product, percentage, fixed_amount
+      example: fixed_amount
     Code:
       type: string
       example: E3B0C44298FC1C149A
@@ -248,32 +306,86 @@ components:
       type: string
       description: |
         Coupon currency.
-    UseOnce:
+      example: USD
+    MultiUser:
       type: boolean
+      default: false
       description: |
-        Coupon can be used only once.
+        If a coupon can be redeemed by any customer. By default only one customer can redeem a coupon.
+      example: true
     UsageLimit:
       type: integer
       default: 1
       description: |
-        Coupon usage limit.
-    ProductIds:
+        Coupon usage limit. By default coupon can be used only once.
+      example: 3
+    EligibleProduct:
+      type: object
+      description: |
+        Eligible product.
+      properties:
+        productId:
+          type: string
+          example: 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d
+        quantity:
+          type: number
+          default: 1
+          example: 2
+    EligibleProductIds:
       type: array
       items:
         type: string
       description: |
-        List of product ids.
-    CategoryIds:
+        Eligible product ids. Empty list means all products are eligible.
+      example: [5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d, 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8e]
+    EligibleCategoryIds:
       type: array
       items:
         type: string
       description: |
-        List of category ids.
+        Eligible category ids. Empty list means all categories are eligible.
+      example: [5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d, 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8e]
+    EligibleMinAmount:
+      type: object
+      description: |
+        Minimum order amount.
+      properties:
+        value:
+          type: number
+          example: 10
+        currency:
+          $ref: '#/components/schemas/Currency'
     ExpireAt:
       type: string
       description: |
         Coupon expiration date.
+      example: 2025-09-30T15:30
     ValidFrom:
       type: string
       description: |
         Coupon start date.
+      example: 2024-09-30T15:30
+    CartProductIds:
+      type: array
+      items:
+        type: string
+      description: |
+        Customer cart product ids.
+      example: [ 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d, 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8e ]
+    CartCategoryIds:
+      type: array
+      items:
+        type: string
+      description: |
+        Customer cart category ids.
+      example: [ 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d, 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8e ]
+    CartAmount:
+      type: object
+      description: |
+        Customer cart amount.
+      properties:
+        value:
+          type: number
+          example: 10
+        currency:
+          $ref: '#/components/schemas/Currency'

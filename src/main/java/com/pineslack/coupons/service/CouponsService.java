@@ -1,9 +1,13 @@
 package com.pineslack.coupons.service;
 
-import com.pineslack.coupons.dto.CreateCouponRequestDto;
-import com.pineslack.coupons.dto.CreateCouponResponseDto;
+import com.pineslack.coupons.dto.CreateCouponRequestDTO;
+import com.pineslack.coupons.dto.CreateCouponResponseDTO;
+import com.pineslack.coupons.dto.RedemptionRequestDTO;
+import com.pineslack.coupons.dto.RedemptionResponseDTO;
 
 public interface CouponsService {
 
-    CreateCouponResponseDto createCoupon(CreateCouponRequestDto requestDto);
+    CreateCouponResponseDTO createCoupon(CreateCouponRequestDTO requestDto);
+
+    RedemptionResponseDTO redeemCoupon(RedemptionRequestDTO requestDto);
 }

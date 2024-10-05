@@ -13,17 +13,19 @@ import static com.pineslack.coupons.util.Defaults.DEFAULT_USAGE_LIMIT;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateCouponRequestDto {
+public class CreateCouponRequestDTO {
     private String websiteId;
     private String customerId;
     private String couponType;
     private String description;
+    private Boolean multiUser=false;
     private Integer usageLimit = DEFAULT_USAGE_LIMIT;
-    private List<String> productIds;
-    private List<String> categoryIds;
+    private List<String> eligibleProductIds;
+    private List<String> eligibleCategoryIds;
+    private AmountDTO eligibleMinAmount;
     private LocalDateTime expireAt;
     private LocalDateTime validFrom;
-    private AmountDto amount; // Fixed Amount Type
+    private AmountDTO amount; // Fixed Amount Type
     private Integer percentage; // Percentage Type
-    private List<FreeProductDto> freeProducts; // Free Product Type
+    private List<ProductDTO> freeProducts; // Free Product Type
 }

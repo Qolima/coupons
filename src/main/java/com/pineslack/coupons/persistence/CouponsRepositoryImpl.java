@@ -1,11 +1,15 @@
 package com.pineslack.coupons.persistence;
 
 import com.pineslack.coupons.document.Coupon;
+import com.pineslack.coupons.document.Redemption;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
@@ -30,6 +34,7 @@ public class CouponsRepositoryImpl implements CouponsRepository {
 
     // Collections
     public static final String COUPONS_COLLECTION = "coupons";
+    public static final String  REDEMPTIONS_COLLECTION = "redemptions";
 
     private final MongoTemplate mongoTemplate;
 
@@ -39,11 +44,30 @@ public class CouponsRepositoryImpl implements CouponsRepository {
     }
 
     @Override
+    public Redemption saveRedemption(Redemption redemption) {
+        return mongoTemplate.insert(redemption, REDEMPTIONS_COLLECTION);
+    }
+
+    @Override
     public boolean existsByWebsiteAndCode(String websiteId, String code) {
         return mongoTemplate.exists(queryByWebsiteIdAndCode(websiteId, code), Coupon.class);
     }
 
+    @Override
+    public Optional<Coupon> findByWebsiteAndCustomerIdAndCode(String websiteId, String customerId, String code) {
+        return ofNullable(mongoTemplate.findOne(queryByWebsiteIdAndCustomerIdAndCode(websiteId, customerId, code), Coupon.class));
+    }
+
+    @Override
+    public Optional<Coupon> findByWebsiteAndCode(String websiteId, String code) {
+        return ofNullable(mongoTemplate.findOne(queryByWebsiteIdAndCode(websiteId, code), Coupon.class));
+    }
+
     private Query queryByWebsiteIdAndCode(String websiteId, String code) {
-        return query(where(WEBSITE_ID).is(websiteId).and(CODE).is(code));
+        return query(where(WEBSITE_ID).is(websiteId).and(CODE).is(code).and(IS_ACTIVE).is(true));
+    }
+
+    private Query queryByWebsiteIdAndCustomerIdAndCode(String websiteId, String customerId, String code) {
+        return query(where(WEBSITE_ID).is(websiteId).and(CUSTOMER_ID).is(customerId).and(CODE).is(code));
     }
 }

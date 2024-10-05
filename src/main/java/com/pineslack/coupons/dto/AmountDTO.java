@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AmountDto {
+public class AmountDTO {
     private String currency;
     private BigDecimal value;
 }

@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 
-@SuperBuilder
 @Getter
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateCouponResponseDto extends ResponseDto {
-   private CouponDto coupon;
+public class ResponseDTO {
+    StatusDTO status;
 }
