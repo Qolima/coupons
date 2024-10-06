@@ -1,12 +1,10 @@
 package com.pineslack.coupons.service;
 
 import com.pineslack.coupons.document.Coupon;
-import com.pineslack.coupons.dto.AmountDTO;
 import com.pineslack.coupons.dto.CreateCouponRequestDTO;
-import com.pineslack.coupons.dto.ProductDTO;
 import com.pineslack.coupons.dto.RedemptionRequestDTO;
 import com.pineslack.coupons.exception.CouponException;
-import com.pineslack.coupons.util.CouponType;
+import com.pineslack.openapi.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +24,7 @@ public class CouponsValidatorImpl implements CouponsValidator {
 
     @Override
     public void validateCreateCoupon(CreateCouponRequestDTO request) {
-        validateDates(request.getValidFrom(), request.getExpireAt());
+        validateDates(toLocalDateTime(request.getRequestBody().getValidFrom()), toLocalDateTime(request.getRequestBody().getExpireAt()));
         validateCouponType(request);
     }
 
@@ -58,24 +56,17 @@ public class CouponsValidatorImpl implements CouponsValidator {
     }
 
     private void validateCouponType(CreateCouponRequestDTO request) {
-
-        CouponType type = CouponType.getTypeFromValue(request.getCouponType());
-        switch (type) {
-            case PERCENTAGE -> {
-                validatePercentage(request.getPercentage());
+        CreateCouponRequestBody requestBody = request.getRequestBody();
+        switch (requestBody) {
+            case CreatePercentageCouponRequest r -> validatePercentage(r.getPercentage());
+            case CreateFixedAmountCouponRequest r -> validateAmount(r.getAmount());
+            case CreateFreeProductCouponRequest r -> validateFreeProducts(r.getFreeProducts());
+            default -> {
             }
-            case FIXED_AMOUNT -> {
-                validateAmount(request.getAmount());
-            }
-            case FREE_PRODUCT -> {
-                validateFreeProducts(request.getFreeProducts());
-            }
-            case INVALID_TYPE ->
-                    throw new CouponException("Coupon type = " + request.getCouponType() + " is not valid");
         }
     }
 
-    private void validateAmount(AmountDTO amount) {
+    private void validateAmount(CouponAmount amount) {
         if (amount == null) {
             throw new CouponException("Coupon amount is required");
         }
@@ -94,7 +85,7 @@ public class CouponsValidatorImpl implements CouponsValidator {
         }
     }
 
-    private void validateFreeProducts(List<ProductDTO> freeProducts) {
+    private void validateFreeProducts(List<FreeProduct> freeProducts) {
         if (isNullOrEmpty(freeProducts)) {
             throw new CouponException("Free products are required for this coupon type");
         }
@@ -122,5 +113,13 @@ public class CouponsValidatorImpl implements CouponsValidator {
 
     public static boolean isNullOrEmpty(List<?> list) {
         return list == null || list.isEmpty();
+    }
+
+    public static LocalDateTime toLocalDateTime(String date) {
+        try {
+            return LocalDateTime.parse(date);
+        } catch (Exception e) {
+            throw new CouponException("Invalid date format: " + date);
+        }
     }
 }

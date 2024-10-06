@@ -24,7 +24,7 @@ public class Coupon {
     private String couponType;
     private String description;
     private Integer usageLimit;
-    private Boolean isActive=true;
+    private Boolean isActive;
     private Boolean multiUser;
     private List<ProductDTO> eligibleProducts;
     private List<String> eligibleProductIds;

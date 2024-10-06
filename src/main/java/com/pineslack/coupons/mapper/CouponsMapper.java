@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.pineslack.coupons.util.Defaults.DEFAULT_MULTI_USER;
+import static com.pineslack.coupons.util.Defaults.DEFAULT_USAGE_LIMIT;
+
 @Service
 @RequiredArgsConstructor
 public class CouponsMapper {
@@ -21,12 +24,18 @@ public class CouponsMapper {
     private final ObjectMapper objectMapper;
 
     public CreateCouponRequestDTO toCreateCouponRequestDto(String websiteId, String customerId, Map<String, Object> payload) {
-        CreateCouponBase body = objectMapper.convertValue(payload, CreateCouponBase.class);
+        CreateCouponRequestBody body = objectMapper.convertValue(payload, CreateCouponRequestBody.class);
+        Integer usageLimit = body.getUsageLimit();
+        Boolean multiUser = body.getMultiUser();
 
-        CreateCouponRequestDTO requestDto = objectMapper.convertValue(body, CreateCouponRequestDTO.class);
-        requestDto.setWebsiteId(websiteId);
-        requestDto.setCustomerId(customerId);
-        return requestDto;
+        body.setUsageLimit(usageLimit == null || usageLimit <= 0 ? DEFAULT_USAGE_LIMIT : usageLimit);
+        body.setMultiUser(multiUser == null ? DEFAULT_MULTI_USER : multiUser);
+
+        return CreateCouponRequestDTO.builder()
+                .requestBody(body)
+                .websiteId(websiteId)
+                .customerId(customerId)
+                .build();
     }
 
     public RedemptionRequestDTO toRedemptionRequestDto(String websiteId, String customerId, String couponCode, RedemptionRequestBody body) {
@@ -55,7 +64,10 @@ public class CouponsMapper {
     }
 
     public Coupon toCouponDocument(CreateCouponRequestDTO requestDto) {
-        return objectMapper.convertValue(requestDto, Coupon.class);
+        Coupon coupon = objectMapper.convertValue(requestDto.getRequestBody(), Coupon.class);
+        coupon.setWebsiteId(requestDto.getWebsiteId());
+        coupon.setCustomerId(requestDto.getCustomerId());
+        return coupon;
     }
 
     public static class CustomResponseCuoponDeserializer extends JsonDeserializer<com.pineslack.openapi.model.Coupon> {
@@ -76,10 +88,10 @@ public class CouponsMapper {
         }
     }
 
-    public static class CustomCreateCouponDeserializer extends JsonDeserializer<CreateCouponBase> {
+    public static class CustomCreateCouponDeserializer extends JsonDeserializer<CreateCouponRequestBody> {
 
         @Override
-        public CreateCouponBase deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
+        public CreateCouponRequestBody deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
             ObjectMapper objectMapper = customObjectMapper();
             JsonNode root = jsonParser.readValueAsTree();
             CouponType couponType = CouponType.getTypeFromValue(root.get("couponType").asText());
