@@ -169,7 +169,6 @@ components:
           type: string
 
     # Redemptions
-
     RedemptionRequestBody:
       type: object
       properties:
@@ -183,6 +182,56 @@ components:
     RedemptionResponse:
       allOf:
         - $ref: '#/components/schemas/Response'
+        - type: object
+          properties:
+            redemption:
+              $ref: '#/components/schemas/Redemption'
+
+    Redemption:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/Code'
+        websiteId:
+          $ref: '#/components/schemas/WebsiteId'
+        ownedByCustomerId:
+          $ref: '#/components/schemas/CustomerId'
+        redeemedByCustomerId:
+          $ref: '#/components/schemas/CustomerId'
+        couponType:
+          $ref: '#/components/schemas/CouponType'
+        usageLimitBalance:
+          $ref: '#/components/schemas/UsageLimit'
+
+    PercentageRedemption:
+      allOf:
+        - $ref: '#/components/schemas/Redemption'
+        - type: object
+          properties:
+            percentage:
+              $ref: '#/components/schemas/Percentage'
+
+    FixedAmountRedemption:
+      allOf:
+        - $ref: '#/components/schemas/Redemption'
+        - type: object
+          properties:
+            amount:
+              $ref: '#/components/schemas/CouponAmount'
+
+    FreeProductRedemption:
+      allOf:
+        - $ref: '#/components/schemas/Redemption'
+        - type: object
+          properties:
+            freeProducts:
+              type: array
+              items:
+                $ref: '#/components/schemas/FreeProduct'
+
+    FreeShippingRedemption:
+      allOf:
+        - $ref: '#/components/schemas/Redemption'
         - type: object
 
     # Coupons

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pineslack.coupons.mapper.CouponsMapper;
 import com.pineslack.openapi.model.Coupon;
 import com.pineslack.openapi.model.CreateCouponRequestBody;
+import com.pineslack.openapi.model.Redemption;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,6 +24,7 @@ public class CouponsConfig {
         objectMapper.registerModule(new JavaTimeModule());
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addDeserializer(Coupon.class, new CouponsMapper.CustomResponseCuoponDeserializer());
+        simpleModule.addDeserializer(Redemption.class, new CouponsMapper.CustomResponseRedemptionDeserializer());
         simpleModule.addDeserializer(CreateCouponRequestBody.class, new CouponsMapper.CustomCreateCouponDeserializer());
         objectMapper.registerModule(simpleModule);
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

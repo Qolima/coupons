@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pineslack.coupons.document.Coupon;
+import com.pineslack.coupons.document.Redemption;
 import com.pineslack.coupons.dto.*;
 import com.pineslack.coupons.util.CouponType;
 import com.pineslack.openapi.model.*;
@@ -53,11 +54,16 @@ public class CouponsMapper {
 
     public RedemptionResponse toRedemptionResponse(RedemptionResponseDTO dto) {
         return new RedemptionResponse()
+                .redemption(toResponseRedemption(dto.getRedemption()))
                 .status(toStatusResponse(dto.getStatus()));
     }
 
     public com.pineslack.openapi.model.Coupon toCouponResponse(Coupon coupon) {
         return objectMapper.convertValue(coupon, com.pineslack.openapi.model.Coupon.class);
+    }
+
+    public com.pineslack.openapi.model.Redemption toResponseRedemption(Redemption redemption) {
+        return objectMapper.convertValue(redemption, com.pineslack.openapi.model.Redemption.class);
     }
 
     public Status toStatusResponse(StatusDTO statusDto) {
@@ -84,6 +90,23 @@ public class CouponsMapper {
                 case PERCENTAGE -> objectMapper.treeToValue(root, PercentageCoupon.class);
                 case FREE_PRODUCT -> objectMapper.treeToValue(root, FreeProductCoupon.class);
                 case FREE_SHIPPING -> objectMapper.treeToValue(root, FreeShippingCoupon.class);
+                default -> null;
+            };
+        }
+    }
+    public static class CustomResponseRedemptionDeserializer extends JsonDeserializer<com.pineslack.openapi.model.Redemption> {
+
+        @Override
+        public com.pineslack.openapi.model.Redemption deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
+            ObjectMapper objectMapper = customObjectMapper();
+            JsonNode root = jsonParser.readValueAsTree();
+            CouponType couponType = CouponType.getTypeFromValue(root.get("couponType").asText());
+
+            return switch (couponType) {
+                case FIXED_AMOUNT -> objectMapper.treeToValue(root, FixedAmountRedemption.class);
+                case PERCENTAGE -> objectMapper.treeToValue(root, PercentageRedemption.class);
+                case FREE_PRODUCT -> objectMapper.treeToValue(root, FreeProductRedemption.class);
+                case FREE_SHIPPING -> objectMapper.treeToValue(root, FreeShippingRedemption.class);
                 default -> null;
             };
         }

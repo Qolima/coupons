@@ -7,7 +7,6 @@ import com.pineslack.coupons.exception.NotFoundException;
 import com.pineslack.coupons.mapper.CouponsMapper;
 import com.pineslack.coupons.persistence.CouponsRepository;
 import com.pineslack.coupons.util.CouponCodeGenerator;
-import com.pineslack.coupons.util.CouponType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -47,9 +46,9 @@ public class CouponsServiceImpl implements CouponsService {
         Coupon coupon = repository.findByWebsiteAndCode(websiteId, couponCode)
                 .orElseThrow(() -> new NotFoundException(COUPON_NOT_FOUND.formatted(websiteId, couponCode)));
 
-        validator.validateRedemptionEligibility(requestDto,coupon);
+        validator.validateRedemptionEligibility(requestDto, coupon);
 
-       return doRedemption(coupon, customerId);
+        return doRedemption(coupon, customerId);
     }
 
     private RedemptionResponseDTO doRedemption(Coupon coupon, String redeemedByCustomerId) {
@@ -66,22 +65,11 @@ public class CouponsServiceImpl implements CouponsService {
         redemption.setRedeemedByCustomerId(redeemedByCustomerId);
         redemption.setCouponType(coupon.getCouponType());
         redemption.setUsageLimitBalance(usageLimitBalance);
+        redemption.setPercentage(coupon.getPercentage());
+        redemption.setAmount(coupon.getAmount());
+        redemption.setFreeProducts(coupon.getFreeProducts());
+        redemption.setFreeServices(coupon.getFreeServices());
 
-        CouponType type = CouponType.getTypeFromValue(coupon.getCouponType());
-        switch (type) {
-            case PERCENTAGE -> {
-                redemption.setPercentage(coupon.getPercentage());
-            }
-            case FIXED_AMOUNT -> {
-                redemption.setAmount(coupon.getAmount());
-            }
-            case FREE_PRODUCT -> {
-                redemption.setFreeProducts(coupon.getFreeProducts());
-            }
-            case FREE_SERVICE -> {
-                redemption.setFreeServices(coupon.getFreeServices());
-            }
-        }
         repository.findAndReplaceByWebsiteAndCode(coupon.getWebsiteId(), coupon.getCode(), coupon);
         repository.saveRedemption(redemption);
 
