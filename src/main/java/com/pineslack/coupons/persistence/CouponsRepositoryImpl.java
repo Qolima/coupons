@@ -1,11 +1,15 @@
 package com.pineslack.coupons.persistence;
 
 import com.pineslack.coupons.document.Coupon;
+import com.pineslack.coupons.document.Redemption;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
@@ -30,12 +34,18 @@ public class CouponsRepositoryImpl implements CouponsRepository {
 
     // Collections
     public static final String COUPONS_COLLECTION = "coupons";
+    public static final String REDEMPTIONS_COLLECTION = "redemptions";
 
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Coupon saveCoupon(Coupon coupon) {
-        return mongoTemplate.insert(coupon, COUPONS_COLLECTION);
+    public void saveCoupon(Coupon coupon) {
+        mongoTemplate.insert(coupon, COUPONS_COLLECTION);
+    }
+
+    @Override
+    public void saveRedemption(Redemption redemption) {
+        mongoTemplate.insert(redemption, REDEMPTIONS_COLLECTION);
     }
 
     @Override
@@ -43,7 +53,26 @@ public class CouponsRepositoryImpl implements CouponsRepository {
         return mongoTemplate.exists(queryByWebsiteIdAndCode(websiteId, code), Coupon.class);
     }
 
+    @Override
+    public Optional<Coupon> findByWebsiteAndCustomerIdAndCode(String websiteId, String customerId, String code) {
+        return ofNullable(mongoTemplate.findOne(queryByWebsiteIdAndCustomerIdAndCode(websiteId, customerId, code), Coupon.class));
+    }
+
+    @Override
+    public Optional<Coupon> findByWebsiteAndCode(String websiteId, String code) {
+        return ofNullable(mongoTemplate.findOne(queryByWebsiteIdAndCode(websiteId, code), Coupon.class));
+    }
+
+    @Override
+    public void findAndReplaceByWebsiteAndCode(String websiteId, String code, Coupon coupon) {
+        mongoTemplate.findAndReplace(queryByWebsiteIdAndCode(websiteId, code), coupon, COUPONS_COLLECTION);
+    }
+
     private Query queryByWebsiteIdAndCode(String websiteId, String code) {
-        return query(where(WEBSITE_ID).is(websiteId).and(CODE).is(code));
+        return query(where(WEBSITE_ID).is(websiteId).and(CODE).is(code).and(IS_ACTIVE).is(true));
+    }
+
+    private Query queryByWebsiteIdAndCustomerIdAndCode(String websiteId, String customerId, String code) {
+        return query(where(WEBSITE_ID).is(websiteId).and(CUSTOMER_ID).is(customerId).and(CODE).is(code));
     }
 }

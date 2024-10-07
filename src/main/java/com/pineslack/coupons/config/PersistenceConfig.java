@@ -1,4 +1,4 @@
-package com.pineslack.coupons.persistence;
+package com.pineslack.coupons.config;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;

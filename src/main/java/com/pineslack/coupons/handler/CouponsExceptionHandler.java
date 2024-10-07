@@ -1,7 +1,7 @@
 package com.pineslack.coupons.handler;
 
-import com.pineslack.coupons.dto.ResponseDto;
-import com.pineslack.coupons.dto.StatusDto;
+import com.pineslack.coupons.dto.ResponseDTO;
+import com.pineslack.coupons.dto.StatusDTO;
 import com.pineslack.coupons.exception.CouponException;
 import com.pineslack.coupons.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -16,12 +16,12 @@ public class CouponsExceptionHandler {
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "Something went wrong internally.";
 
     @ExceptionHandler({CouponException.class})
-    public ResponseEntity<ResponseDto> handleBadRequest(RuntimeException e, WebRequest request) {
+    public ResponseEntity<ResponseDTO> handleBadRequest(RuntimeException e, WebRequest request) {
         return createResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler({NotFoundException.class})
-    public ResponseEntity<ResponseDto> handleNotFound(RuntimeException e, WebRequest request) {
+    public ResponseEntity<ResponseDTO> handleNotFound(RuntimeException e, WebRequest request) {
         return createResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
@@ -32,9 +32,9 @@ public class CouponsExceptionHandler {
     }
 */
 
-    private ResponseEntity<ResponseDto> createResponse(HttpStatus status, String message) {
-        ResponseDto response = ResponseDto.builder()
-                .status(StatusDto.builder()
+    private ResponseEntity<ResponseDTO> createResponse(HttpStatus status, String message) {
+        ResponseDTO response = ResponseDTO.builder()
+                .status(StatusDTO.builder()
                         .code(status)
                         .message(message)
                         .build())

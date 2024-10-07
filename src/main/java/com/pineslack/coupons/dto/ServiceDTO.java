@@ -1,15 +1,15 @@
 package com.pineslack.coupons.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-
 
 @Getter
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDto {
-    StatusDto status;
+public class ServiceDTO {
+    private String serviceId;
+    private Integer quantity;
 }
