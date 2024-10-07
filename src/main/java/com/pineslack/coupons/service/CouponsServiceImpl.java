@@ -58,17 +58,7 @@ public class CouponsServiceImpl implements CouponsService {
             coupon.setIsActive(false);
         } else coupon.setUsageLimit(usageLimitBalance);
 
-        Redemption redemption = new Redemption();
-        redemption.setCode(coupon.getCode());
-        redemption.setWebsiteId(coupon.getWebsiteId());
-        redemption.setOwnedByCustomerId(coupon.getCustomerId());
-        redemption.setRedeemedByCustomerId(redeemedByCustomerId);
-        redemption.setCouponType(coupon.getCouponType());
-        redemption.setUsageLimitBalance(usageLimitBalance);
-        redemption.setPercentage(coupon.getPercentage());
-        redemption.setAmount(coupon.getAmount());
-        redemption.setFreeProducts(coupon.getFreeProducts());
-        redemption.setFreeServices(coupon.getFreeServices());
+        Redemption redemption = buildRedemption(coupon, redeemedByCustomerId, usageLimitBalance);
 
         repository.findAndReplaceByWebsiteAndCode(coupon.getWebsiteId(), coupon.getCode(), coupon);
         repository.saveRedemption(redemption);
@@ -80,6 +70,21 @@ public class CouponsServiceImpl implements CouponsService {
                         .build())
                 .redemption(redemption)
                 .build();
+    }
+
+    private static Redemption buildRedemption(Coupon coupon, String redeemedByCustomerId, Integer usageLimitBalance) {
+        Redemption redemption = new Redemption();
+        redemption.setCode(coupon.getCode());
+        redemption.setWebsiteId(coupon.getWebsiteId());
+        redemption.setOwnedByCustomerId(coupon.getCustomerId());
+        redemption.setRedeemedByCustomerId(redeemedByCustomerId);
+        redemption.setCouponType(coupon.getCouponType());
+        redemption.setUsageLimitBalance(usageLimitBalance);
+        redemption.setPercentage(coupon.getPercentage());
+        redemption.setAmount(coupon.getAmount());
+        redemption.setFreeProducts(coupon.getFreeProducts());
+        redemption.setFreeServices(coupon.getFreeServices());
+        return redemption;
     }
 
     private String generateCouponCode(String websiteId) {
