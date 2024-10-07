@@ -7,13 +7,15 @@ import java.util.Optional;
 
 public interface CouponsRepository {
 
-    public Coupon saveCoupon(Coupon coupon);
+    public void saveCoupon(Coupon coupon);
 
-    public Redemption saveRedemption(Redemption redemption);
+    public void saveRedemption(Redemption redemption);
 
     public boolean existsByWebsiteAndCode(String websiteId, String code);
 
     public Optional<Coupon> findByWebsiteAndCustomerIdAndCode(String websiteId, String customerId, String code);
 
     public Optional<Coupon> findByWebsiteAndCode(String websiteId, String code);
+
+    public void findAndReplaceByWebsiteAndCode(String websiteId, String code, Coupon coupon);
 }

@@ -39,11 +39,12 @@ public class CouponsMapper {
     }
 
     public RedemptionRequestDTO toRedemptionRequestDto(String websiteId, String customerId, String couponCode, RedemptionRequestBody body) {
-        RedemptionRequestDTO requestDto = objectMapper.convertValue(body, RedemptionRequestDTO.class);
-        requestDto.setWebsiteId(websiteId);
-        requestDto.setCustomerId(customerId);
-        requestDto.setCode(couponCode);
-        return requestDto;
+        return RedemptionRequestDTO.builder()
+                .websiteId(websiteId)
+                .customerId(customerId)
+                .code(couponCode)
+                .requestBody(body)
+                .build();
     }
 
     public CreateCouponResponse toCreateCouponResponse(CreateCouponResponseDTO dto) {

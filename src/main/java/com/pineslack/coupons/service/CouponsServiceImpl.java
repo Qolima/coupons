@@ -82,7 +82,7 @@ public class CouponsServiceImpl implements CouponsService {
                 redemption.setFreeServices(coupon.getFreeServices());
             }
         }
-        repository.saveCoupon(coupon);
+        repository.findAndReplaceByWebsiteAndCode(coupon.getWebsiteId(), coupon.getCode(), coupon);
         repository.saveRedemption(redemption);
 
         return RedemptionResponseDTO.builder()

@@ -35,25 +35,31 @@ public class CouponsValidatorImpl implements CouponsValidator {
                 throw new CouponException(COUPON_NOT_MULTI_USER.formatted(request.getWebsiteId(), request.getCode()));
             }
         }
+        validateRedemptionBody(request.getRequestBody(), coupon);
 
-        if (!isNullOrEmpty(request.getCartProductIds())) {
-            if (!new HashSet<>(request.getCartProductIds()).containsAll(coupon.getEligibleProductIds())) {
+    }
+
+    private void validateRedemptionBody(RedemptionRequestBody requestBody, Coupon coupon) {
+        if (!isNullOrEmpty(requestBody.getCartProductIds())) {
+            if (!new HashSet<>(requestBody.getCartProductIds()).containsAll(coupon.getEligibleProductIds())) {
                 throw new CouponException("Coupon is not eligible for this product(s)");
             }
         }
 
-        if (!isNullOrEmpty(request.getCartCategoryIds())) {
-            if (!new HashSet<>(request.getCartCategoryIds()).containsAll(coupon.getEligibleCategoryIds())) {
+        if (!isNullOrEmpty(requestBody.getCartCategoryIds())) {
+            if (!new HashSet<>(requestBody.getCartCategoryIds()).containsAll(coupon.getEligibleCategoryIds())) {
                 throw new CouponException("Coupon is not eligible for this category(s)");
             }
         }
 
-        if (!isNull(request.getCartAmount())) {
-            if (isNull(request.getCartAmount().getValue()) && request.getCartAmount().getValue().compareTo(coupon.getEligibleMinAmount().getValue()) > 0) {
+        if (!isNull(requestBody.getCartAmount())) {
+            if (!isNull(requestBody.getCartAmount().getValue()) && requestBody.getCartAmount().getValue().compareTo(coupon.getEligibleMinAmount().getValue()) < 0) {
                 throw new CouponException("Coupon is not eligible for this amount");
             }
+            validateCurrency(requestBody.getCartAmount().getCurrency());
         }
     }
+
 
     private void validateCouponType(CreateCouponRequestDTO request) {
         CreateCouponRequestBody requestBody = request.getRequestBody();
@@ -102,7 +108,7 @@ public class CouponsValidatorImpl implements CouponsValidator {
 
     private void validateCurrency(String currency) {
         if (isBlank(currency)) {
-            throw new CouponException("Currency code is required for this coupon type");
+            throw new CouponException("Amount currency is required");
         }
         try {
             Currency.getInstance(currency);

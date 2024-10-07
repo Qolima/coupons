@@ -34,18 +34,18 @@ public class CouponsRepositoryImpl implements CouponsRepository {
 
     // Collections
     public static final String COUPONS_COLLECTION = "coupons";
-    public static final String  REDEMPTIONS_COLLECTION = "redemptions";
+    public static final String REDEMPTIONS_COLLECTION = "redemptions";
 
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Coupon saveCoupon(Coupon coupon) {
-        return mongoTemplate.insert(coupon, COUPONS_COLLECTION);
+    public void saveCoupon(Coupon coupon) {
+        mongoTemplate.insert(coupon, COUPONS_COLLECTION);
     }
 
     @Override
-    public Redemption saveRedemption(Redemption redemption) {
-        return mongoTemplate.insert(redemption, REDEMPTIONS_COLLECTION);
+    public void saveRedemption(Redemption redemption) {
+        mongoTemplate.insert(redemption, REDEMPTIONS_COLLECTION);
     }
 
     @Override
@@ -61,6 +61,11 @@ public class CouponsRepositoryImpl implements CouponsRepository {
     @Override
     public Optional<Coupon> findByWebsiteAndCode(String websiteId, String code) {
         return ofNullable(mongoTemplate.findOne(queryByWebsiteIdAndCode(websiteId, code), Coupon.class));
+    }
+
+    @Override
+    public void findAndReplaceByWebsiteAndCode(String websiteId, String code, Coupon coupon) {
+        mongoTemplate.findAndReplace(queryByWebsiteIdAndCode(websiteId, code), coupon, COUPONS_COLLECTION);
     }
 
     private Query queryByWebsiteIdAndCode(String websiteId, String code) {
