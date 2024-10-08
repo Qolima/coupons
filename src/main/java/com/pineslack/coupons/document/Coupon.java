@@ -2,6 +2,7 @@ package com.pineslack.coupons.document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.pineslack.coupons.dto.AmountDTO;
+import com.pineslack.coupons.dto.EligibleDTO;
 import com.pineslack.coupons.dto.ProductDTO;
 import com.pineslack.coupons.dto.ServiceDTO;
 import lombok.*;
@@ -26,10 +27,7 @@ public class Coupon {
     private Integer usageLimit;
     private Boolean isActive=true;
     private Boolean multiUser;
-    private List<ProductDTO> eligibleProducts;
-    private List<String> eligibleProductIds;
-    private List<String> eligibleCategoryIds;
-    private AmountDTO eligibleMinAmount;
+    private EligibleDTO eligible;
     private LocalDateTime expireAt;
     private LocalDateTime validFrom;
     @JsonInclude(JsonInclude.Include.NON_NULL)

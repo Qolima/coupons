@@ -104,12 +104,8 @@ components:
           $ref: '#/components/schemas/UsageLimit'
         multiUser:
           $ref: '#/components/schemas/MultiUser'
-        eligibleProductIds:
-          $ref: '#/components/schemas/EligibleCategoryIds'
-        eligibleCategoryIds:
-          $ref: '#/components/schemas/EligibleCategoryIds'
-        eligibleMinAmount:
-          $ref: '#/components/schemas/EligibleMinAmount'
+        eligible:
+          $ref: '#/components/schemas/Eligible'
         expireAt:
           $ref: '#/components/schemas/ExpireAt'
         validFrom:
@@ -123,7 +119,7 @@ components:
             freeProducts:
               type: array
               items:
-                $ref: '#/components/schemas/FreeProduct'
+                $ref: '#/components/schemas/Product'
 
     CreatePercentageCouponRequest:
       allOf:
@@ -139,7 +135,7 @@ components:
         - type: object
           properties:
             amount:
-              $ref: '#/components/schemas/CouponAmount'
+              $ref: '#/components/schemas/Amount'
 
     CreateFreeShippingCouponRequest:
       allOf:
@@ -172,12 +168,8 @@ components:
     RedemptionRequestBody:
       type: object
       properties:
-        cartProductIds:
-          $ref: '#/components/schemas/CartProductIds'
-        cartCategoryIds:
-          $ref: '#/components/schemas/CartCategoryIds'
-        cartAmount:
-          $ref: '#/components/schemas/CartAmount'
+        cart:
+          $ref: '#/components/schemas/Cart'
 
     RedemptionResponse:
       allOf:
@@ -217,7 +209,7 @@ components:
         - type: object
           properties:
             amount:
-              $ref: '#/components/schemas/CouponAmount'
+              $ref: '#/components/schemas/Amount'
 
     FreeProductRedemption:
       allOf:
@@ -227,7 +219,7 @@ components:
             freeProducts:
               type: array
               items:
-                $ref: '#/components/schemas/FreeProduct'
+                $ref: '#/components/schemas/Product'
 
     FreeShippingRedemption:
       allOf:
@@ -252,12 +244,8 @@ components:
           $ref: '#/components/schemas/Description'
         multiUser:
           $ref: '#/components/schemas/MultiUser'
-        eligibleProductIds:
-          $ref: '#/components/schemas/EligibleProductIds'
-        eligibleCategoryIds:
-          $ref: '#/components/schemas/EligibleCategoryIds'
-        eligibleMinAmount:
-          $ref: '#/components/schemas/EligibleMinAmount'
+        eligible:
+          $ref: '#/components/schemas/Eligible'
         expireAt:
           $ref: '#/components/schemas/ExpireAt'
         validFrom:
@@ -287,7 +275,7 @@ components:
             freeProducts:
               type: array
               items:
-                $ref: '#/components/schemas/FreeProduct'
+                $ref: '#/components/schemas/Product'
 
     FreeShippingCoupon:
       allOf:
@@ -298,6 +286,46 @@ components:
               type: boolean
 
     # Fields
+
+    Eligible:
+      type: object
+      properties:
+        productIds:
+          type: array
+          items:
+            type: string
+          example: [ 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d, 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8e ]
+        categoryIds:
+          type: array
+          items:
+            type: string
+          example: [ 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d, 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8e ]
+        minimumAmount:
+          $ref: '#/components/schemas/Amount'
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    Cart:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        productIds:
+          type: array
+          items:
+            type: string
+          example: [ 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d, 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8e ]
+        categoryIds:
+          type: array
+          items:
+            type: string
+          example: [ 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d, 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8e ]
+        amount:
+          $ref: '#/components/schemas/Amount'
+
     Amount:
       type: object
       properties:
@@ -308,26 +336,6 @@ components:
           $ref: '#/components/schemas/Currency'
     Product:
       type: object
-      properties:
-        productId:
-          type: string
-          example: 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d
-        quantity:
-          type: number
-          default: 1
-          example: 2
-
-    CouponAmount:
-      allOf:
-        - $ref: '#/components/schemas/Amount'
-      type: object
-      description: |
-        Coupon amount.
-
-    FreeProduct:
-      type: object
-      description: |
-        Coupon free product.
       properties:
         productId:
           type: string
@@ -354,7 +362,7 @@ components:
       example: 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d
     CouponType:
       type: string
-      description: | 
+      description: |
         Coupon type: free_shipping, free_product, percentage, fixed_amount
       example: fixed_amount
     Code:
@@ -385,34 +393,6 @@ components:
       description: |
         Coupon usage limit. By default coupon can be used only once.
       example: 3
-    EligibleProduct:
-      allOf:
-        - $ref: '#/components/schemas/Product'
-      type: object
-      description: |
-        Eligible product.
-
-    EligibleProductIds:
-      type: array
-      items:
-        type: string
-      description: |
-        Eligible product ids. Empty list means all products are eligible.
-      example: [5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d, 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8e]
-    EligibleCategoryIds:
-      type: object
-      items:
-        type: string
-      description: |
-        Eligible category ids. Empty list means all categories are eligible.
-      example: [5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d, 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8e]
-    EligibleMinAmount:
-      allOf:
-        - $ref: '#/components/schemas/Amount'
-      type: object
-      description: |
-        Minimum order amount.
-
     ExpireAt:
       type: string
       description: |
@@ -423,27 +403,3 @@ components:
       description: |
         Coupon start date.
       example: 2024-09-30T15:30
-    CartProductIds:
-      type: array
-      items:
-        type: string
-      description: |
-        Customer cart product ids.
-      example: [ 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d, 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8e ]
-    CartCategoryIds:
-      type: array
-      items:
-        type: string
-      description: |
-        Customer cart category ids.
-      example: [ 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8d, 5a3d8d0b-9f0b-4f6b-9c20-5a7d8c0b5c8e ]
-    CartAmount:
-      type: object
-      description: |
-        Customer cart amount.
-      properties:
-        value:
-          type: number
-          example: 10
-        currency:
-          $ref: '#/components/schemas/Currency'
