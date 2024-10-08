@@ -2,6 +2,7 @@ package com.pineslack.coupons.service;
 
 import com.pineslack.coupons.document.Coupon;
 import com.pineslack.coupons.dto.CreateCouponRequestDTO;
+import com.pineslack.coupons.dto.EligibleDTO;
 import com.pineslack.coupons.dto.RedemptionRequestDTO;
 import com.pineslack.coupons.exception.CouponException;
 import com.pineslack.openapi.model.*;
@@ -40,26 +41,29 @@ public class CouponsValidatorImpl implements CouponsValidator {
     }
 
     private void validateRedemptionBody(RedemptionRequestBody requestBody, Coupon coupon) {
-        if (!isNullOrEmpty(requestBody.getCartProductIds())) {
-            if (!new HashSet<>(requestBody.getCartProductIds()).containsAll(coupon.getEligibleProductIds())) {
+
+        Cart cart = requestBody.getCart();
+        EligibleDTO eligible = coupon.getEligible();
+
+        if (!isNullOrEmpty(cart.getProductIds())) {
+            if (!new HashSet<>(cart.getProductIds()).containsAll(eligible.getProductIds())) {
                 throw new CouponException("Coupon is not eligible for this product(s)");
             }
         }
 
-        if (!isNullOrEmpty(requestBody.getCartCategoryIds())) {
-            if (!new HashSet<>(requestBody.getCartCategoryIds()).containsAll(coupon.getEligibleCategoryIds())) {
+        if (!isNullOrEmpty(cart.getCategoryIds())) {
+            if (!new HashSet<>(cart.getCategoryIds()).containsAll(eligible.getCategoryIds())) {
                 throw new CouponException("Coupon is not eligible for this category(s)");
             }
         }
 
-        if (!isNull(requestBody.getCartAmount())) {
-            if (!isNull(requestBody.getCartAmount().getValue()) && requestBody.getCartAmount().getValue().compareTo(coupon.getEligibleMinAmount().getValue()) < 0) {
+        if (!isNull(cart.getAmount())) {
+            if (!isNull(cart.getAmount().getValue()) && cart.getAmount().getValue().compareTo(eligible.getMinimumAmount().getValue()) < 0) {
                 throw new CouponException("Coupon is not eligible for this amount");
             }
-            validateCurrency(requestBody.getCartAmount().getCurrency());
+            validateCurrency(cart.getAmount().getCurrency());
         }
     }
-
 
     private void validateCouponType(CreateCouponRequestDTO request) {
         CreateCouponRequestBody requestBody = request.getRequestBody();
@@ -72,7 +76,7 @@ public class CouponsValidatorImpl implements CouponsValidator {
         }
     }
 
-    private void validateAmount(CouponAmount amount) {
+    private void validateAmount(Amount amount) {
         if (amount == null) {
             throw new CouponException("Coupon amount is required");
         }
@@ -91,7 +95,7 @@ public class CouponsValidatorImpl implements CouponsValidator {
         }
     }
 
-    private void validateFreeProducts(List<FreeProduct> freeProducts) {
+    private void validateFreeProducts(List<Product> freeProducts) {
         if (isNullOrEmpty(freeProducts)) {
             throw new CouponException("Free products are required for this coupon type");
         }
