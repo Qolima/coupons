@@ -2,13 +2,37 @@ package com.pineslack.coupons.mapper;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pineslack.coupons.document.Coupon;
 import com.pineslack.coupons.document.Redemption;
-import com.pineslack.coupons.dto.*;
+import com.pineslack.coupons.dto.CreateCouponRequestDTO;
+import com.pineslack.coupons.dto.CreateCouponResponseDTO;
+import com.pineslack.coupons.dto.RedemptionRequestDTO;
+import com.pineslack.coupons.dto.RedemptionResponseDTO;
+import com.pineslack.coupons.dto.StatusDTO;
 import com.pineslack.coupons.util.CouponType;
-import com.pineslack.openapi.model.*;
+import com.pineslack.openapi.model.CreateCouponRequestBody;
+import com.pineslack.openapi.model.CreateCouponResponse;
+import com.pineslack.openapi.model.CreateFixedAmountCouponRequest;
+import com.pineslack.openapi.model.CreateFreeProductCouponRequest;
+import com.pineslack.openapi.model.CreateFreeShippingCouponRequest;
+import com.pineslack.openapi.model.CreatePercentageCouponRequest;
+import com.pineslack.openapi.model.FixedAmountCoupon;
+import com.pineslack.openapi.model.FixedAmountRedemption;
+import com.pineslack.openapi.model.FreeProductCoupon;
+import com.pineslack.openapi.model.FreeProductRedemption;
+import com.pineslack.openapi.model.FreeShippingCoupon;
+import com.pineslack.openapi.model.FreeShippingRedemption;
+import com.pineslack.openapi.model.PercentageCoupon;
+import com.pineslack.openapi.model.PercentageRedemption;
+import com.pineslack.openapi.model.RedemptionRequestBody;
+import com.pineslack.openapi.model.RedemptionResponse;
+import com.pineslack.openapi.model.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -80,7 +104,7 @@ public class CouponsMapper {
     public static class CustomResponseCuoponDeserializer extends JsonDeserializer<com.pineslack.openapi.model.Coupon> {
 
         @Override
-        public com.pineslack.openapi.model.Coupon deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
+        public com.pineslack.openapi.model.Coupon deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             ObjectMapper objectMapper = customObjectMapper();
             JsonNode root = jsonParser.readValueAsTree();
             CouponType couponType = CouponType.getTypeFromValue(root.get("couponType").asText());
@@ -94,10 +118,11 @@ public class CouponsMapper {
             };
         }
     }
+
     public static class CustomResponseRedemptionDeserializer extends JsonDeserializer<com.pineslack.openapi.model.Redemption> {
 
         @Override
-        public com.pineslack.openapi.model.Redemption deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
+        public com.pineslack.openapi.model.Redemption deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             ObjectMapper objectMapper = customObjectMapper();
             JsonNode root = jsonParser.readValueAsTree();
             CouponType couponType = CouponType.getTypeFromValue(root.get("couponType").asText());
@@ -115,7 +140,7 @@ public class CouponsMapper {
     public static class CustomCreateCouponDeserializer extends JsonDeserializer<CreateCouponRequestBody> {
 
         @Override
-        public CreateCouponRequestBody deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
+        public CreateCouponRequestBody deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             ObjectMapper objectMapper = customObjectMapper();
             JsonNode root = jsonParser.readValueAsTree();
             CouponType couponType = CouponType.getTypeFromValue(root.get("couponType").asText());

@@ -1,9 +1,12 @@
 package com.pineslack.coupons.dto;
 
-import com.pineslack.openapi.model.RedemptionRequestBody;
-import lombok.*;
 
-import java.util.List;
+import com.pineslack.openapi.model.RedemptionRequestBody;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Builder

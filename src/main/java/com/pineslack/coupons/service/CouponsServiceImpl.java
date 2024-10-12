@@ -2,7 +2,11 @@ package com.pineslack.coupons.service;
 
 import com.pineslack.coupons.document.Coupon;
 import com.pineslack.coupons.document.Redemption;
-import com.pineslack.coupons.dto.*;
+import com.pineslack.coupons.dto.CreateCouponRequestDTO;
+import com.pineslack.coupons.dto.CreateCouponResponseDTO;
+import com.pineslack.coupons.dto.RedemptionRequestDTO;
+import com.pineslack.coupons.dto.RedemptionResponseDTO;
+import com.pineslack.coupons.dto.StatusDTO;
 import com.pineslack.coupons.exception.NotFoundException;
 import com.pineslack.coupons.mapper.CouponsMapper;
 import com.pineslack.coupons.persistence.CouponsRepository;
@@ -10,7 +14,9 @@ import com.pineslack.coupons.util.CouponCodeGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.pineslack.coupons.util.StatusMessages.*;
+import static com.pineslack.coupons.util.StatusMessages.COUPON_CREATED;
+import static com.pineslack.coupons.util.StatusMessages.COUPON_NOT_FOUND;
+import static com.pineslack.coupons.util.StatusMessages.COUPON_REDEEMED;
 import static org.springframework.http.HttpStatus.OK;
 
 @Service

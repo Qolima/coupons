@@ -12,5 +12,5 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateCouponResponseDTO extends ResponseDTO {
-   private Coupon coupon;
+    private Coupon coupon;
 }

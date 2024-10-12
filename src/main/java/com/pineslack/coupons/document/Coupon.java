@@ -5,7 +5,12 @@ import com.pineslack.coupons.dto.AmountDTO;
 import com.pineslack.coupons.dto.EligibleDTO;
 import com.pineslack.coupons.dto.ProductDTO;
 import com.pineslack.coupons.dto.ServiceDTO;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -25,7 +30,7 @@ public class Coupon {
     private String couponType;
     private String description;
     private Integer usageLimit;
-    private Boolean isActive=true;
+    private Boolean isActive = true;
     private Boolean multiUser;
     private EligibleDTO eligible;
     private LocalDateTime expireAt;

@@ -5,7 +5,14 @@ import com.pineslack.coupons.dto.CreateCouponRequestDTO;
 import com.pineslack.coupons.dto.EligibleDTO;
 import com.pineslack.coupons.dto.RedemptionRequestDTO;
 import com.pineslack.coupons.exception.CouponException;
-import com.pineslack.openapi.model.*;
+import com.pineslack.openapi.model.Amount;
+import com.pineslack.openapi.model.Cart;
+import com.pineslack.openapi.model.CreateCouponRequestBody;
+import com.pineslack.openapi.model.CreateFixedAmountCouponRequest;
+import com.pineslack.openapi.model.CreateFreeProductCouponRequest;
+import com.pineslack.openapi.model.CreatePercentageCouponRequest;
+import com.pineslack.openapi.model.Product;
+import com.pineslack.openapi.model.RedemptionRequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
